@@ -1,0 +1,57 @@
+type Photo {
+  id: ID!
+  "Type - ID & ! makes it mandatory"
+  name: String!
+  description: String
+  category: PhotoCategory!
+}
+
+enum PhotoCategory {
+  SELFIE
+  LANDSCAPE
+  ACTION
+}
+
+type Query {
+  """
+  Inner `!` means:
+   the array can't return a null value
+  External `!` means:
+   the allPhotos will return an empty array if there's no photos
+  """
+  allPhotos: [Photo!]!
+  photoById(id: ID!): Photo!
+  totalPhotos: Int!
+  allUsers: [User!]!
+  """
+  Find a user by github login and return the User object
+  """
+  user(githubLogin: ID!): User!
+}
+
+type User {
+  githubLogin: ID!
+  name: String!
+  avatar: String!
+  postedPhotos: [Photo!]!
+}
+
+input PostPhotoInput {
+  name: String!
+  description: String
+  category: PhotoCategory
+}
+
+type PostPhotoMutationResponse {
+  photo: Photo
+  user: User
+  datePosted: String
+}
+
+type Mutation {
+  """
+  This mutation takes in the `PostPhotoInput` input
+  And returns the `PostPhotoMutationResponse` type
+  """
+  postPhoto(input: PostPhotoInput!): PostPhotoMutationResponse!
+}
